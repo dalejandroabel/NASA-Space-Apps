@@ -1,13 +1,17 @@
-FROM python:3.12.3
-ENV PYTHONUNBUFFERED=True
+# Python image to use.
+FROM python:3.12-alpine
 
-RUN pip install --upgrade pip
+# Set the working directory to /app
+WORKDIR /app
+
+# copy the requirements file used for dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r  requirements.txt
 
-ENV APP_HOME=/root
-WORKDIR $APP_HOME
-COPY /app $APP_HOME/app
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
 
-EXPOSE 8080
-CMD ["python","main.py"] 
+# Copy the rest of the working directory contents into the container at /app
+COPY . .
+ENV PORT=8080
+# Run app.py when the container launches
+ENTRYPOINT ["python", "app.py"]
