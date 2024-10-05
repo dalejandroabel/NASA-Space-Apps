@@ -6,3 +6,6 @@ venv/
 .pdf
 
 datasets/**.csv
+datasets/**.xlsx
+datasets/**.json
+datasets/**.pdf
