@@ -1,1 +1,8 @@
 venv/
+.csv
+.xlsx
+.xls
+.zip
+.pdf
+
+datasets/**.csv
