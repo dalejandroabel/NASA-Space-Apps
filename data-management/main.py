@@ -1,5 +1,5 @@
 import pandas as pd
-from utils.df_helper import filter_disasters, filter_df_disaster
+from utils.df_helper import filter_disasters, get_disasters
 
 if __name__ == '__main__':
 
@@ -7,7 +7,7 @@ if __name__ == '__main__':
     data = pd.read_csv('datasets/pend-gdis-1960-2018-disasterlocations.csv')
 
     # Clean the data
-    data = filter_df_disaster(data)
+    data = get_disasters(data)
 
     # Apply the filter
     request = ('Colombia', 1992, 'earthquake', 'Medellin')

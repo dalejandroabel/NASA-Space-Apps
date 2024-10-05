@@ -3,7 +3,7 @@ import seaborn as sns
 
 # Functions to filter the data
 
-def filter_df_disaster(df):
+def get_disasters(df):
     return df[['country', 'year', 'geolocation', 'disastertype', 'latitude', 'longitude']]
 
 # Functions to give the data
