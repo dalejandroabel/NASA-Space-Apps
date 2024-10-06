@@ -3,6 +3,7 @@ import seaborn as sns
 import pandas as pd
 import json
 import unidecode
+import plotly
 
 # Important functions to work with the data
 # Function to remove accents
