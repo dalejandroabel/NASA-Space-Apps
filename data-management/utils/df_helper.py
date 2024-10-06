@@ -2,20 +2,35 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import json
+import unidecode
+import plotly
 
-# Functions to filter the data
+# Important functions to work with the data
+# Function to remove accents
+def remove_accents(word):
+    return unidecode.unidecode(word)
 
-def get_disasters(df):
+# Function to convert the coordinates
+def convert_coordinate(value):
+    if 'N' in value or 'E' in value:
+        return float(value[:-1])
+    elif 'S' in value or 'W' in value:
+        return -float(value[:-1])
+    return float(value)
+
+# Functions to filter the data of disasters
+
+def filter_dataset_disasters(df):
     return df[['country', 'year', 'geolocation', 'disastertype', 'latitude', 'longitude']]
 
-# Functions to give the data
+# Functions to give the data of disasters
 
-def filter_disasters(df, **kwargs):
+def give_disasters(df, **kwargs):
     # Check if the country, year, disaster type and geolocation are not None
     for key, value in kwargs.items():
         if value is not None:
             df = df[df[key] == value]
-    df.to_json('datasets/disasters.json', orient='records')
+    return df
 
 # Functions to plot the data
 
@@ -33,6 +48,37 @@ def plot_disaster_locations_by_country(df, year, country):
     plt.title(f'Disaster locations in {year} in {country}')
     plt.show()
 
+# Functions to filter the data of weather
+def filter_dataset_weather(df, remove_accents, convert_coordinate):
+    # Remove accents from the columns
+    df['City'] = df['City'].apply(remove_accents)
+    df['Country'] = df['Country'].apply(remove_accents)
+    # Filter the columns
+    df = df[['dt', 'AverageTemperature', 'City', 'Country', 'Latitude', 'Longitude']]
+    # Delete the rows with NaN values
+    df = df.dropna()
+    # Get year and month from the date
+    df['dt'] = pd.to_datetime(df['dt'])
+    df['year'] = df.dt.dt.year
+    df['month'] = df.dt.dt.month
+    df.drop('dt', axis=1, inplace=True)
+    # Convert the coordinates
+    df['Latitude'] = df['Latitude'].apply(convert_coordinate)
+    df['Longitude'] = df['Longitude'].apply(convert_coordinate)
+    # Replace -0.00 values with 0.00
+    df['Longitude'] = df['Longitude'].replace(-0.00, 0.00)
+    df['Latitude'] = df['Latitude'].replace(-0.00, 0.00)
+    # Sort the values
+    df = df.sort_values(by=['year', 'month'])
+    return df
+
+# Functions to give the data of weather
+def give_weather(df, **kwargs):
+    # Check if the country, year, disaster type and geolocation are not None
+    for key, value in kwargs.items():
+        if value is not None:
+            df = df[df[key] == value]
+    return df
 
 # Información de las hojas a cargar y los filtros a aplicar del excel de PM2.5
 sheet_info = {
