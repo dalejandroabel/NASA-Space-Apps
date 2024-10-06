@@ -6,7 +6,7 @@ venv/
 .pdf
 .xlsx-jtl9t4
 datasets/**.csv
-
+datasets/**.txt
 datasets/**.csv
 datasets/**.xlsx
 datasets/**.pdf
