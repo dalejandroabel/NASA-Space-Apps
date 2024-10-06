@@ -174,6 +174,61 @@ def plot_activity_distribution(df, year, typeActivity, give_people):
     plt.bar(a_year.index, a_year, color = sns.color_palette('viridis', len(a_year)))
     plt.show()
 
+# Prepare the graph of the poverty distribution
+
+def plot_poverty_distribution(df, year, give_home):
+
+    df_year = give_home(df, año = year)
+
+    p_year = df_year[df_year['pobre'] == 1].groupby('depto').size() / df_year.groupby('depto').size()
+
+    # The data in ascending order
+    p_year = p_year.sort_values()
+
+    plt.figure(figsize=(15, 8))
+
+    # Graph of the poor population with seaborn
+    sns.barplot(x = p_year.index, y = p_year)
+
+    # Add the value of the percentage over the bars
+    for i in range(len(p_year)):
+        plt.text(i, p_year[i], round(p_year[i]*100, 2), ha = 'center', va = 'bottom')
+
+    plt.title('Distribución de la población por pobreza en el año ' + str(year) + ' en pobreza')
+    plt.xticks(rotation=90)
+    plt.xlabel('Departamento')
+    plt.ylabel('Porcentaje de la población')
+    # Vary the color in the bars
+    plt.bar(p_year.index, p_year, color = sns.color_palette('viridis', len(p_year)))
+    plt.show()
+
+# Function to get a graph of the extreme poverty distribution
+
+def plot_extreme_poverty_distribution(df, year, give_home):
+
+    df_year = give_home(df, año = year)
+
+    ep_year = df_year[df_year['indigente'] == 1].groupby('depto').size() / df_year.groupby('depto').size()
+
+    # The data in ascending order
+    ep_year = ep_year.sort_values()
+
+    plt.figure(figsize=(15, 8))
+
+    # Graph of the poor population with seaborn
+    sns.barplot(x = ep_year.index, y = ep_year)
+
+    # Add the value of the percentage over the bars
+    for i in range(len(ep_year)):
+        plt.text(i, ep_year[i], round(ep_year[i]*100, 2), ha = 'center', va = 'bottom')
+
+    plt.title('Distribución de la población por pobreza en el año ' + str(year) + ' en pobreza')
+    plt.xticks(rotation=90)
+    plt.xlabel('Departamento')
+    plt.ylabel('Porcentaje de la población')
+    # Vary the color in the bars
+    plt.bar(ep_year.index, ep_year, color = sns.color_palette('viridis', len(ep_year)))
+
 # Función para graficar histograma
 def plot_histogram(df, title='Histograma'):
     fig = px.histogram(df, x='Value', nbins=30, title=title)
