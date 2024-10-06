@@ -4,6 +4,7 @@ import pandas as pd
 import json
 import unidecode
 
+
 # Important functions to work with the data
 
 # Function to remove accents
@@ -80,99 +81,109 @@ def give_weather(df, **kwargs):
             df = df[df[key] == value]
     df.to_json('datasets/weather.json',orient='records')
 
-# Información de las hojas a cargar y los filtros a aplicar del excel de PM2.5
+# Información de las hojas a cargar y los detalles de procesamiento
 sheet_info = {
-    'Country PM2.5 Exposure': {
-        'filter_prefix': 'AVPMC_',
-        'filter_cols': ['COUNTRY']
-    },
     'Country PM2.5 Exceedance': {
         'filter_prefix': 'PMEXDC_',
-        'filter_cols': ['COUNTRY']
+        'country_column': 'COUNTRY'
     },
     'Urban PM2.5 Exposure': {
         'filter_prefix': 'AVPMU_',
-        'filter_cols': ['COUNTRYENG']
+        'country_column': 'COUNTRYENG',
+        'city_column': 'STNDRDNAME'
     }
 }
 
-def load_and_filter_sheet(excel_data, sheet_name, filter_prefix, filter_cols):
+# Función para normalizar nombres (países y ciudades)
+def normalize_name(name):
+    # Convertir a string por si hay valores nulos
+    name = str(name)
+    # Eliminar tildes y caracteres especiales
+    name_without_accents = unidecode.unidecode(name)
+    # Convertir a minúsculas y luego capitalizar
+    name_formatted = name_without_accents.lower().capitalize()
+    return name_formatted
+
+# Función para leer y procesar cada hoja
+def load_and_process_sheet(excel_data, sheet_name, filter_prefix, country_column, city_column=None):
     # Cargar la hoja
     df = excel_data.parse(sheet_name)
+    
     # Filtrar las columnas que empiezan con el prefijo
     data_columns = [col for col in df.columns if col.startswith(filter_prefix)]
+    
     # Renombrar las columnas eliminando el prefijo y espacios
     renamed_columns = {col: col.replace(filter_prefix, '').strip() for col in data_columns}
     df.rename(columns=renamed_columns, inplace=True)
+    
     # Crear lista de columnas filtradas (sin prefijos)
-    filtered_columns = filter_cols + list(renamed_columns.values())
+    key_columns = [country_column]
+    if city_column:
+        key_columns.append(city_column)
+    filtered_columns = key_columns + list(renamed_columns.values())
+    
     # Seleccionar las columnas filtradas
-    filtered_df = df[filtered_columns]
-    return filtered_df
-
-# Cargar y filtrar cada hoja
-def cargarYfiltrarhojas(excelData):
-    filtered_dataframes = {}
-    for sheet_name, info in sheet_info.items():
-        filtered_df = load_and_filter_sheet(
-            excelData,
-            sheet_name,
-            info['filter_prefix'],
-            info['filter_cols']
-        )
-        filtered_dataframes[sheet_name] = filtered_df
-    return filtered_dataframes
-
-def get_filtered_data(excelData, sheet_name=None, country=None, year=None, nameFileJson='../datasets/data.json'):
-    """
-    Devuelve los datos filtrados según los parámetros proporcionados.
-    """
-    results = []
-    filtered_dataframes = cargarYfiltrarhojas(excelData=excelData)
-    sheets_to_check = [sheet_name] if sheet_name else filtered_dataframes.keys()
+    df = df[filtered_columns]
     
-    for sheet in sheets_to_check:
-        df = filtered_dataframes.get(sheet)
-        if df is not None:
-            df_filtered = df.copy()
-            
-            # Filtrar por país
-            if country is not None:
-                country_col = None
-                if 'COUNTRY' in df_filtered.columns:
-                    country_col = 'COUNTRY'
-                elif 'COUNTRYENG' in df_filtered.columns:
-                    country_col = 'COUNTRYENG'
-                else:
-                    continue
-                df_filtered = df_filtered[df_filtered[country_col] == country]
-                if df_filtered.empty:
-                    continue
-
-            # Filtrar por año
-            if year is not None:
-                year = str(year)
-                if year in df_filtered.columns:
-                    columns_to_keep = [col for col in df_filtered.columns if not col.isdigit()] + [year]
-                    df_filtered = df_filtered[columns_to_keep]
-                else:
-                    continue
-            else:
-                # Incluir todas las columnas de años
-                year_columns = [col for col in df_filtered.columns if col.isdigit()]
-                columns_to_keep = [col for col in df_filtered.columns if not col.isdigit()] + year_columns
-                df_filtered = df_filtered[columns_to_keep]
-            
-            # Añadir el nombre de la hoja
-            df_filtered['Sheet'] = sheet
-            results.append(df_filtered)
+    # Normalizar los nombres de los países y ciudades
+    df[country_column] = df[country_column].apply(normalize_name)
+    if city_column:
+        df[city_column] = df[city_column].apply(normalize_name)
     
-    if results:
-        df_result = pd.concat(results, ignore_index=True)
-        df_result.to_json(path_or_buf=nameFileJson, orient='records')
-        return df_result
-    else:
-        return json.dumps([])
+    # Renombrar las columnas de país y ciudad para consistencia
+    df = df.rename(columns={country_column: 'COUNTRY'})
+    if city_column:
+        df = df.rename(columns={city_column: 'CITY'})
+    
+    # Agregar una columna para indicar el indicador (nombre de la hoja)
+    df['Indicator'] = sheet_name
+    
+    # Convertir a formato largo
+    id_vars = ['COUNTRY', 'Indicator']
+    if city_column:
+        id_vars.insert(1, 'CITY')  # Insertar CITY después de COUNTRY
+    df_long = pd.melt(df, id_vars=id_vars, var_name='Year', value_name='Value')
+    
+    # Convertir 'Year' a entero
+    df_long['Year'] = df_long['Year'].astype(int)
+    
+    # Eliminar filas con valores nulos en 'Value'
+    df_long = df_long.dropna(subset=['Value'])
+    
+    return df_long
+
+# Procesar y combinar las hojas seleccionadas
+df_list = []
+for sheet_name, info in sheet_info.items():
+    df_sheet = load_and_process_sheet(
+        excel_data=excelData,
+        sheet_name=sheet_name,
+        filter_prefix=info['filter_prefix'],
+        country_column=info['country_column'],
+        city_column=info.get('city_column')  # Puede ser None si no está definido
+    )
+    df_list.append(df_sheet)
+
+# Combinar las hojas en un solo DataFrame
+df_combined = pd.concat(df_list, ignore_index=True)
+
+# Función para filtrar datos
+def filter_data(df, indicator=None, countries=None, cities=None, start_year=None, end_year=None):
+    if indicator is not None:
+        df = df[df['Indicator'] == indicator]
+    if countries is not None:
+        # Normalizar los nombres de los países en el filtro
+        countries_normalized = [normalize_name(country) for country in countries]
+        df = df[df['COUNTRY'].isin(countries_normalized)]
+    if cities is not None and 'CITY' in df.columns:
+        # Normalizar los nombres de las ciudades en el filtro
+        cities_normalized = [normalize_name(city) for city in cities]
+        df = df[df['CITY'].isin(cities_normalized)]
+    if start_year is not None:
+        df = df[df['Year'] >= start_year]
+    if end_year is not None:
+        df = df[df['Year'] <= end_year]
+    return df
     
 
 # ----------------------------------------
