@@ -6,6 +6,7 @@ import unidecode
 
 
 # Important functions to work with the data
+
 # Function to remove accents
 def remove_accents(word):
     return unidecode.unidecode(word)
@@ -30,7 +31,7 @@ def give_disasters(df, **kwargs):
     for key, value in kwargs.items():
         if value is not None:
             df = df[df[key] == value]
-    return df
+    df.to_json('datasets/disasters.json',orient='records')
 
 # Functions to plot the data
 
@@ -78,7 +79,7 @@ def give_weather(df, **kwargs):
     for key, value in kwargs.items():
         if value is not None:
             df = df[df[key] == value]
-    return df
+    df.to_json('datasets/weather.json',orient='records')
 
 # Información de las hojas a cargar y los detalles de procesamiento
 sheet_info = {

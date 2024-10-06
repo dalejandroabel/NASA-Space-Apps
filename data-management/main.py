@@ -1,58 +1,54 @@
 import pandas as pd
 import os
-from utils.df_helper import remove_accents, give_disasters, filter_dataset_disasters, filter_dataset_weather, give_weather, replace_dataset_people, filter_dataset_people, filter_datasets_people, give_people, get_filtered_data
+from utils.df_helper import remove_accents, convert_coordinate, give_disasters, filter_dataset_disasters, filter_dataset_weather, give_weather, replace_dataset_people, filter_dataset_people, filter_datasets_people, give_people, get_filtered_data
 from utils.constants import deptos
 from utils.graph_helper import plot_stratum_distribution
 
 if __name__ == '__main__':
 
-    # # ----------------------------------------
-    # # Code to work with disaster data
-    # # ----------------------------------------
-    # path_disasters = 'datasets/pend-gdis-1960-2018-disasterlocations.csv'
-    # # Load the data
-    # data = pd.read_csv(path_disasters)
+    # ----------------------------------------
+    # Code to work with disaster data
+    # ----------------------------------------
+    path_disasters = 'datasets/pend-gdis-1960-2018-disasterlocations.csv'
+    # Load the data
+    data_disasters = pd.read_csv(path_disasters)
 
-    # # Clean the data
-    # data = filter_dataset_disasters(data)
+    # Clean the data
+    data_disasters = filter_dataset_disasters(data_disasters)
 
-    # # Apply the filter
-    # request = ('Colombia', 1992, 'earthquake', 'Medellin')  # Modify the request
-    # country, year, disastertype, geolocation = request
-    # data = give_disasters(data, country=country, year=year, disastertype=disastertype, geolocation=geolocation)
+    # Apply the filter
+    give_disasters(data_disasters)
 
     # # ----------------------------------------
     # # Code to work with weather data
     # # ----------------------------------------
-    # path_weather = 'datasets/global_temperatures_by_city.csv'
-    # # Load the data
-    # data = pd.read_csv(path_weather)
+    path_weather = 'datasets/global_temperatures_by_city.csv'
+    # Load the data
+    data_weather = pd.read_csv(path_weather)
 
-    # # Clean the data
-    # data = filter_dataset_weather(data)
+    # Clean the data
+    data_weather = filter_dataset_weather(data_weather, remove_accents, convert_coordinate)
 
-    # # Apply the filter
-    # request = (13, 1900, 8.7, 'Leicester', 'United Kingdom') # Modify the request
-    # year, month, temperature, city, country = request
-    # data = give_weather(data, year=year, month=month, AverageTemperature=temperature, City=city, Country=country)
+    # Apply the filter
+    give_weather(data_weather)
 
-    # # ----------------------------------------
-    # # Código para trabajar con datos de PM2.5
-    # # ----------------------------------------
+    # ----------------------------------------
+    # Código para trabajar con datos de PM2.5
+    # ----------------------------------------
 
-    # # Ruta del archivo Excel
-    # filePath = '../sdei-annual-pm2-5/sdei-annual-pm2-5-concentrations-countries-urban-areas-v1-1998-2016-xlsx.xlsx'
+    # Ruta del archivo Excel
+    filePath = '../sdei-annual-pm2-5/sdei-annual-pm2-5-concentrations-countries-urban-areas-v1-1998-2016-xlsx.xlsx'
 
-    # # Verificar si el archivo existe
-    # if not os.path.exists(filePath):
-    #     print(f"No se encontró el archivo: {filePath}")
-    #     exit()
+    # Verificar si el archivo existe
+    if not os.path.exists(filePath):
+        print(f"No se encontró el archivo: {filePath}")
+        exit()
 
-    # # Cargar el archivo Excel
-    # excelData = pd.ExcelFile(filePath)
+    # Cargar el archivo Excel
+    excelData = pd.ExcelFile(filePath)
 
-    # #  Filtrar por país, año y hoja distinta
-    # get_filtered_data(excelData,sheet_name='Urban PM2.5 Exposure', country='Colombia', year=2015)
+    #  Filtrar por país, año y hoja distinta
+    get_filtered_data(excelData,sheet_name='Urban PM2.5 Exposure', country='Colombia', year=2015)
 
     # ----------------------------------------
     # Code to work with national data
