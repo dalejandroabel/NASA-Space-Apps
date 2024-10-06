@@ -4,8 +4,9 @@ venv/
 .xls
 .zip
 .pdf
+.xlsx-jtl9t4
+datasets/**.csv
 
 datasets/**.csv
 datasets/**.xlsx
-datasets/**.json
 datasets/**.pdf
