@@ -4,6 +4,7 @@ import pandas as pd
 import utils.df_helper as give_people
 import plotly.express as px
 import unidecode
+from utils.df_helper import normalize_name
 
 # Function to get a graph of the stratum distribution
 
