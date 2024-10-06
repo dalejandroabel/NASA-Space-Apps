@@ -3,9 +3,9 @@ import seaborn as sns
 import pandas as pd
 import json
 import unidecode
-import plotly
 
 # Important functions to work with the data
+
 # Function to remove accents
 def remove_accents(word):
     return unidecode.unidecode(word)
@@ -30,7 +30,7 @@ def give_disasters(df, **kwargs):
     for key, value in kwargs.items():
         if value is not None:
             df = df[df[key] == value]
-    return df
+    df.to_json('datasets/disasters.json',orient='records')
 
 # Functions to plot the data
 
@@ -78,7 +78,7 @@ def give_weather(df, **kwargs):
     for key, value in kwargs.items():
         if value is not None:
             df = df[df[key] == value]
-    return df
+    df.to_json('datasets/weather.json',orient='records')
 
 # Información de las hojas a cargar y los filtros a aplicar del excel de PM2.5
 sheet_info = {
