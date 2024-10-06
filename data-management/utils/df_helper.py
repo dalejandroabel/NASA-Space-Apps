@@ -152,20 +152,21 @@ def load_and_process_sheet(excel_data, sheet_name, filter_prefix, country_column
     
     return df_long
 
-# Procesar y combinar las hojas seleccionadas
-df_list = []
-for sheet_name, info in sheet_info.items():
-    df_sheet = load_and_process_sheet(
-        excel_data=excelData,
-        sheet_name=sheet_name,
-        filter_prefix=info['filter_prefix'],
-        country_column=info['country_column'],
-        city_column=info.get('city_column')  # Puede ser None si no está definido
-    )
-    df_list.append(df_sheet)
+def process_and_combine_sheets(excel_data, sheet_info):
+    df_list = []
+    for sheet_name, info in sheet_info.items():
+        df_sheet = load_and_process_sheet(
+            excel_data=excel_data,
+            sheet_name=sheet_name,
+            filter_prefix=info['filter_prefix'],
+            country_column=info['country_column'],
+            city_column=info.get('city_column')  # Puede ser None si no está definido
+        )
+        df_list.append(df_sheet)
 
-# Combinar las hojas en un solo DataFrame
-df_combined = pd.concat(df_list, ignore_index=True)
+    # Combinar las hojas en un solo DataFrame
+    df_combined = pd.concat(df_list, ignore_index=True)
+    return df_combined
 
 # Función para filtrar datos
 def filter_data(df, indicator=None, countries=None, cities=None, start_year=None, end_year=None):
