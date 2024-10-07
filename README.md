@@ -72,7 +72,7 @@ Graph Generation
 The graphs are generated using Plotly through the scripts in data-management/utils/. Below are some examples of how to create histograms and interactive maps.
 
 Example: Generate an Income Histogram
-```
+```python
 from data_management.utils.graph_helper import plot_histogram
 import pandas as pd
 
@@ -84,7 +84,7 @@ plot_histogram(df, column='income', title='Income Histogram')
 ```
 
 Example: Generate an Air Quality Map
-```
+```python
 from data_management.utils.graph_helper import plot_map
 import pandas as pd
 
