@@ -21,16 +21,213 @@ def plot_stratum_distribution(df, year, typeDistribution, give_people):
     elif typeDistribution == 'Alto':
         c_year = df_year[df_year['estrato'].isin([5,6])].groupby('depto').size() / df_year.groupby('depto').size()
     
-    # Plot the graph with seaborn
+    # Data in ascending order
+    c_year = c_year.sort_values()
+    # Plot the graph
 
     plt.figure(figsize=(15, 8))
 
     sns.barplot(x = c_year.index, y = c_year)
+
+    # Add the value of the percentage over the bars
+    for i in range(len(c_year)):
+        plt.text(i, c_year[i], round(c_year[i]*100, 2), ha = 'center', va = 'bottom')
+    
     plt.title('Distribución de la población por estrato en el año ' + str(year) + ' en ' + typeDistribution + ' estrato')
     plt.xticks(rotation=90)
     plt.xlabel('Departamento')
     plt.ylabel('Porcentaje de la población')
+    # Vary the color in the bars
+    plt.bar(c_year.index, c_year, color = sns.color_palette('viridis', len(c_year)))
     plt.show()
+
+# Function to get a graph of the regime distribution
+
+def plot_regime_distribution(df, year, typeRegime, give_people):
+
+    df_year = give_people(df, año = year)
+
+    if typeRegime == 'Contributivo':
+        r_year = df_year[df_year['regimen'] == 'Contributivo'].groupby('depto').size() / df_year.groupby('depto').size()
+    
+    elif typeRegime == 'Especial':
+        r_year = df_year[df_year['regimen'] == 'Especial'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeRegime == 'Subsidiado':
+        r_year = df_year[df_year['regimen'] == 'Subsidiado'].groupby('depto').size() / df_year.groupby('depto').size()
+    
+    elif typeRegime == 'No sabe, no informa':
+        r_year = df_year[df_year['regimen'] == 'No sabe, no informa'].groupby('depto').size() / df_year.groupby('depto').size()
+    
+    # Data in ascending order
+    r_year = r_year.sort_values()
+    # Plot the graph
+
+    plt.figure(figsize=(15, 8))
+
+    sns.barplot(x = r_year.index, y = r_year)
+
+    # Add the value of the percentage over the bars
+    for i in range(len(r_year)):
+        plt.text(i, r_year[i], round(r_year[i]*100, 2), ha = 'center', va = 'bottom')
+
+    plt.title('Distribución de la población por régimen en el año ' + str(year) + ' en ' + typeRegime + ' régimen')
+    plt.xticks(rotation=90)
+    plt.xlabel('Departamento')
+    plt.ylabel('Porcentaje de la población')
+    # Vary the color in the bars
+    plt.bar(r_year.index, r_year, color = sns.color_palette('viridis', len(r_year)))
+    plt.show()
+
+# Function to get a graph of the education distribution
+
+def plot_education_distribution(df, year, typeEducation, give_people):
+
+    df_year = give_people(df, año = year)
+
+    if typeEducation == 'Ninguno':
+        e_year = df_year[df_year['educacion'] == 'Ninguno'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeEducation == 'Preescolar':
+        e_year = df_year[df_year['educacion'] == 'Preescolar'].groupby('depto').size() / df_year.groupby('depto').size()
+    
+    elif typeEducation == 'Básica primaria':
+        e_year = df_year[df_year['educacion'] == 'Básica primaria'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeEducation == 'Básica secundaria':
+        e_year = df_year[df_year['educacion'] == 'Básica secundaria'].groupby('depto').size() / df_year.groupby('depto').size()
+    
+    elif typeEducation == 'Media':
+        e_year = df_year[df_year['educacion'] == 'Media'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeEducation == 'Superior o Universitaria':
+        e_year = df_year[df_year['educacion'] == 'Superior o Universitaria'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeEducation == 'No sabe, no informa':
+        e_year = df_year[df_year['educacion'] == 'No sabe, no informa'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    # The data in ascending order
+    e_year = e_year.sort_values()
+
+    # Plot the graph
+
+    plt.figure(figsize=(15, 8))
+
+    sns.barplot(x = e_year.index, y = e_year)
+
+    # Add the value of the percentage over the bars
+    for i in range(len(e_year)):
+        plt.text(i, e_year[i], round(e_year[i]*100, 2), ha = 'center', va = 'bottom')
+    
+    # Labels and title
+    plt.title('Distribución de la población por nivel de educación en el año ' + str(year) + ' en ' + typeEducation + ' educación')
+    plt.xticks(rotation=90)
+    plt.xlabel('Departamento')
+    plt.ylabel('Porcentaje de la población')
+    # Vary the color in the bars
+    plt.bar(e_year.index, e_year, color = sns.color_palette('viridis', len(e_year)))
+    plt.show()
+
+# Function to get a graph of the activity distribution
+
+def plot_activity_distribution(df, year, typeActivity, give_people):
+
+    df_year = give_people(df, año = year)
+
+    if typeActivity == 'Trabajando':
+        a_year = df_year[df_year['actividad'] == 'Trabajando'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeActivity == 'Buscando trabajo':
+        a_year = df_year[df_year['actividad'] == 'Buscando trabajo'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeActivity == 'Estudiando':
+        a_year = df_year[df_year['actividad'] == 'Estudiando'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeActivity == 'Oficios del hogar':
+        a_year = df_year[df_year['actividad'] == 'Oficios del hogar'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeActivity == 'Incapacitado permanente':
+        a_year = df_year[df_year['actividad'] == 'Incapacitado permanente'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    elif typeActivity == 'Otra actividad':
+        a_year = df_year[df_year['actividad'] == 'Otra actividad'].groupby('depto').size() / df_year.groupby('depto').size()
+
+    # The data in ascending order
+    a_year = a_year.sort_values()
+
+    # Plot the graph
+
+    plt.figure(figsize=(15, 8))
+
+    sns.barplot(x = a_year.index, y = a_year)
+
+    # Add the value of the percentage over the bars
+    for i in range(len(a_year)):
+        plt.text(i, a_year[i], round(a_year[i]*100, 2), ha = 'center', va = 'bottom')
+
+    # Labels and title
+    plt.title('Distribución de la población por actividad en el año ' + str(year) + ' en ' + typeActivity + ' actividad')
+    plt.xticks(rotation=90)
+    plt.xlabel('Departamento')
+    plt.ylabel('Porcentaje de la población')
+    # Vary the color in the bars
+    plt.bar(a_year.index, a_year, color = sns.color_palette('viridis', len(a_year)))
+    plt.show()
+
+# Prepare the graph of the poverty distribution
+
+def plot_poverty_distribution(df, year, give_home):
+
+    df_year = give_home(df, año = year)
+
+    p_year = df_year[df_year['pobre'] == 1].groupby('depto').size() / df_year.groupby('depto').size()
+
+    # The data in ascending order
+    p_year = p_year.sort_values()
+
+    plt.figure(figsize=(15, 8))
+
+    # Graph of the poor population with seaborn
+    sns.barplot(x = p_year.index, y = p_year)
+
+    # Add the value of the percentage over the bars
+    for i in range(len(p_year)):
+        plt.text(i, p_year[i], round(p_year[i]*100, 2), ha = 'center', va = 'bottom')
+
+    plt.title('Distribución de la población por pobreza en el año ' + str(year) + ' en pobreza')
+    plt.xticks(rotation=90)
+    plt.xlabel('Departamento')
+    plt.ylabel('Porcentaje de la población')
+    # Vary the color in the bars
+    plt.bar(p_year.index, p_year, color = sns.color_palette('viridis', len(p_year)))
+    plt.show()
+
+# Function to get a graph of the extreme poverty distribution
+
+def plot_extreme_poverty_distribution(df, year, give_home):
+
+    df_year = give_home(df, año = year)
+
+    ep_year = df_year[df_year['indigente'] == 1].groupby('depto').size() / df_year.groupby('depto').size()
+
+    # The data in ascending order
+    ep_year = ep_year.sort_values()
+
+    plt.figure(figsize=(15, 8))
+
+    # Graph of the poor population with seaborn
+    sns.barplot(x = ep_year.index, y = ep_year)
+
+    # Add the value of the percentage over the bars
+    for i in range(len(ep_year)):
+        plt.text(i, ep_year[i], round(ep_year[i]*100, 2), ha = 'center', va = 'bottom')
+
+    plt.title('Distribución de la población por pobreza en el año ' + str(year) + ' en pobreza')
+    plt.xticks(rotation=90)
+    plt.xlabel('Departamento')
+    plt.ylabel('Porcentaje de la población')
+    # Vary the color in the bars
+    plt.bar(ep_year.index, ep_year, color = sns.color_palette('viridis', len(ep_year)))
 
 # Función para graficar histograma
 def plot_histogram(df, title='Histograma'):

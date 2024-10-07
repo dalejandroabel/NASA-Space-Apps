@@ -188,7 +188,7 @@ def filter_data(df, indicator=None, countries=None, cities=None, start_year=None
     
 
 # ----------------------------------------
-# Code to work with national data
+# Code to work with national data (people)
 # ----------------------------------------
 
 # Function to filter the data of people
@@ -256,8 +256,71 @@ def replace_dataset_people(df):
 
 # Function to give the data of people
 def give_people(df, **kwargs):
-    # Check if the country, year, disaster type and geolocation are not None
     for key, value in kwargs.items():
         if value is not None:
             df = df[df[key] == value]
     df.to_json('datasets/people.json',orient='records')
+
+# ----------------------------------------
+# Code to work with national data (home)
+# ----------------------------------------
+
+# Function to filter the data of home
+def filter_dataset_home(df, deptos, year, remove_accents):
+    
+    # Apply the title case to the columns
+    df.columns = df.columns.str.lower()
+
+    # Check for the presence of the department column
+    if 'depto' in df.columns:
+        df['depto'] = df['depto'].apply(lambda x: [depto[1] for depto in deptos if depto[0] == x][0])
+    elif 'dpto' in df.columns:
+        df['depto'] = df['dpto'].apply(lambda x: [depto[1] for depto in deptos if depto[0] == x][0])
+
+    # Remove rows where depto is None
+    df = df.dropna(subset=['depto'])
+    
+    # Remove accents from the columns
+    df['depto'] = df['depto'].apply(remove_accents)
+    df['dominio'] = df['dominio'].apply(remove_accents)
+    
+    # Applying the title case to the dominio column
+    df['dominio'] = df['dominio'].str.title()
+    
+    # Delete 'Resto Urbano' and 'Rural' from the dominio column
+    df = df[df['dominio'] != 'Resto Urbano']
+    df = df[df['dominio'] != 'Rural']
+    
+    # Add the year column
+    df['año'] = year
+
+    # Clean data
+    if df['ingtotug'].dtype != float:
+        df["ingtotug"] = [x.replace(",", ".") for x in df["ingtotug"]]
+        # Convert non-numeric values to NaN, then convert to float
+        df['ingtotug'] = pd.to_numeric(df['ingtotug'], errors='coerce')
+        df['ingtotug'] = df["ingtotug"].astype(float)
+    
+    df['vivienda'] = df['p5090']
+    
+    df = df[['depto', 'dominio', 'año', 'ingtotug', 'vivienda', 'pobre', 'indigente']]
+    return df
+
+# Function to filter some data of home
+def filter_datasets_home(dfs, deptos, years, remove_accents, filter_dataset_people):
+    df_16, df_17, df_18, df_19, df_20, df_21, df_22 = [filter_dataset_home(dfs[i], deptos, years[i], remove_accents) for i in range(len(dfs))]
+    df = pd.concat([df_16, df_17, df_18, df_19, df_20, df_21, df_22])
+    return df
+
+# Function to replace the dataset of home
+def replace_dataset_home(df):
+    df['vivienda'] = df['vivienda'].replace({'1': 'Propia, totalmente pagada', '2': 'Propia, la están pagando', '3': 'En arriendo o subarriendo', '4': 'En usufructo', '5': 'Ocupante', '6': 'Otra'})
+    df['vivienda'] = df['vivienda'].replace({1.0: 'Propia, totalmente pagada', 2.0: 'Propia, la están pagando', 3.0: 'En arriendo o subarriendo', 4.0: 'En usufructo', 5.0: 'Ocupante', 6.0: 'Otra'})
+    return df
+
+# Function to give the data of home
+def give_home(df, **kwargs):
+    for key, value in kwargs.items():
+        if value is not None:
+            df = df[df[key] == value]
+    df.to_json('datasets/home.json',orient='records')
