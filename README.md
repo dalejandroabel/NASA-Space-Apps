@@ -1,58 +1,129 @@
-# Cloud Run Hello World with Cloud Code
+# NASA Space Apps Project
 
-"Hello World" is a [Cloud Run](https://cloud.google.com/run/docs) application that renders a simple webpage.
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-For details on how to use this sample as a template in Cloud Code, read the documentation for Cloud Code for [VS Code](https://cloud.google.com/code/docs/vscode/quickstart-cloud-run?utm_source=ext&utm_medium=partner&utm_campaign=CDR_kri_gcp_cloudcodereadmes_012521&utm_content=-) or [IntelliJ](https://cloud.google.com/code/docs/intellij/quickstart-cloud-run?utm_source=ext&utm_medium=partner&utm_campaign=CDR_kri_gcp_cloudcodereadmes_012521&utm_content=-).
+## Descripción
 
-### Table of Contents
-* [Getting Started with VS Code](#getting-started-with-vs-code)
-* [Getting Started with IntelliJ](#getting-started-with-intellij)
-* [Sign up for User Research](#sign-up-for-user-research)
+Este repositorio contiene un proyecto orientado al procesamiento y visualización de datos climáticos, geográficos y de salud relacionados con el ambiente y la calidad del aire. El objetivo principal es generar histogramas y mapas interactivos que permitan a los usuarios familiarizarse con la naturaleza de los datos y comprender cómo se relacionan entre sí, especialmente en el contexto de aspectos socioeconómicos.
 
----
-## Getting Started with VS Code
+## Tabla de Contenidos
 
-### Run the app locally with the Cloud Run Emulator
-1. Click on the Cloud Code status bar and select 'Run on Cloud Run Emulator'.  
-![image](./img/status-bar.png)
+- [Descripción](#descripción)
+- [Instalación](#instalación)
+- [Uso](#uso)
+  - [Procesamiento de Datos](#procesamiento-de-datos)
+  - [Generación de Gráficos](#generación-de-gráficos)
+- [Tecnologías Utilizadas](#tecnologías-utilizadas)
+- [Contribuciones](#contribuciones)
+- [Licencia](#licencia)
+- [Contacto](#contacto)
 
-2. Use the Cloud Run Emulator dialog to specify your [builder option](https://cloud.google.com/code/docs/vscode/deploying-a-cloud-run-app#deploying_a_cloud_run_service). Cloud Code supports Docker, Jib, and Buildpacks. See the skaffold documentation on [builders](https://skaffold.dev/docs/pipeline-stages/builders/) for more information about build artifact types.  
-![image](./img/build-config.png)
+## Instalación
 
-3. Click ‘Run’. Cloud Code begins building your image.
+### Requisitos Previos
 
-4. View the build progress in the OUTPUT window. Once the build has finished, click on the URL in the OUTPUT window to view your live application.  
-![image](./img/cloud-run-url.png)
+- [Python 3.8+](https://www.python.org/downloads/)
+- [pip](https://pip.pypa.io/en/stable/installation/)
+- [Git](https://git-scm.com/downloads)
 
-5. To stop the application, click the stop icon on the Debug Toolbar.
+### Pasos de Instalación
 
----
-## Getting Started with IntelliJ
+1. **Clonar el Repositorio**
 
-### Run the app locally with the Cloud Run Emulator
+    ```bash
+    git clone https://github.com/tu_usuario/NASA-SPACE-APPS.git
+    cd NASA-SPACE-APPS
+    ```
 
-#### Define run configuration
+2. **Crear un Entorno Virtual (Opcional pero Recomendado)**
 
-1. Click the Run/Debug configurations dropdown on the top taskbar and select 'Edit Configurations'.  
-![image](./img/edit-config.png)
+    ```bash
+    python3 -m venv env
+    source env/bin/activate  # En Windows: env\Scripts\activate
+    ```
 
-2. Select 'Cloud Run: Run Locally' and specify your [builder option](https://cloud.google.com/code/docs/intellij/developing-a-cloud-run-app#defining_your_run_configuration). Cloud Code supports Docker, Jib, and Buildpacks. See the skaffold documentation on [builders](https://skaffold.dev/docs/pipeline-stages/builders/) for more information about build artifact types.  
-![image](./img/local-build-config.png)
+3. **Instalar las Dependencias**
 
-#### Run the application
-1. Click the Run/Debug configurations dropdown and select 'Cloud Run: Run Locally'. Click the run icon.  
-![image](./img/config-run-locally.png)
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-2. View the build process in the output window. Once the build has finished, you will receive a notification from the Event Log. Click 'View' to access the local URLs for your deployed services.  
-![image](./img/local-success.png)
+## Uso
 
----
-## Sign up for User Research
+### Procesamiento de Datos
 
-We want to hear your feedback!
+Para procesar los datos y generar los archivos necesarios, ejecuta el siguiente comando:
 
-The Cloud Code team is inviting our user community to sign-up to participate in Google User Experience Research. 
+```bash
+python main.py
+```
 
-If you’re invited to join a study, you may try out a new product or tell us what you think about the products you use every day. At this time, Google is only sending invitations for upcoming remote studies. Once a study is complete, you’ll receive a token of thanks for your participation such as a gift card or some Google swag. 
+Este script realizará las siguientes tareas:
 
-[Sign up using this link](https://google.qualtrics.com/jfe/form/SV_4Me7SiMewdvVYhL?reserved=1&utm_source=In-product&Q_Language=en&utm_medium=own_prd&utm_campaign=Q1&productTag=clou&campaignDate=January2021&referral_code=UXbT481079) and answer a few questions about yourself, as this will help our research team match you to studies that are a great fit.
+- Limpieza y preparación de los datos.
+- Agregación de información relevante.
+- Almacenamiento de los datos procesados en la carpeta `datasets/`.
+
+### Generación de Gráficos
+
+Los gráficos se generan utilizando Plotly a través de los scripts en `data-management/utils/`. A continuación, se presentan algunos ejemplos de cómo crear histogramas y mapas interactivos.
+
+#### Ejemplo: Generar un Histograma de Ingresos
+
+```python
+from data_management.utils.graph_helper import plot_histogram
+import pandas as pd
+
+# Cargar los datos
+df = pd.read_csv('datasets/data_filtered_plot.csv')
+
+# Generar el histograma
+plot_histogram(df, column='ingreso', title='Histograma de Ingresos')
+```
+
+#### Ejemplo: Generar un Mapa de Calidad del Aire
+
+```python
+from data_management.utils.graph_helper import plot_map
+import pandas as pd
+
+# Cargar los datos geoespaciales y de calidad del aire
+df = pd.read_json('datasets/data_with_location.json')
+geojson = 'img/colgeo.geojson'
+
+# Generar el mapa
+plot_map(df, geojson, location_column='location', value_column='PM2.5', title='Mapa de Calidad del Aire PM2.5')
+```
+
+## Tecnologías Utilizadas
+
+- **Python 3.8+**: Lenguaje de programación principal.
+- **Pandas**: Manipulación y análisis de datos.
+- **Plotly**: Visualización interactiva de datos.
+- **Jupyter Notebook**: Análisis exploratorio y documentación interactiva.
+- **Docker**: Contenerización de la aplicación (si aplica).
+- **GeoJSON**: Manejo de datos geoespaciales.
+
+## Contribuciones
+
+¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto, por favor sigue los siguientes pasos:
+
+1. **Fork** el repositorio.
+2. Crea una rama para tu característica (`git checkout -b feature/nueva-caracteristica`).
+3. Realiza tus cambios y asegúrate de que el código siga las guías de estilo.
+4. Haz **commit** de tus cambios (`git commit -m 'Añadir nueva característica'`).
+5. **Push** a la rama (`git push origin feature/nueva-caracteristica`).
+6. Abre un **Pull Request**.
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+
+## Contacto
+
+Si tienes alguna pregunta o sugerencia, no dudes en contactarme:
+
+- **Correo Electrónico**: tomassosa.23@gmail.com
+
+
+¡Gracias por revisar este proyecto! Esperamos que las visualizaciones generadas te ayuden a comprender mejor la relación entre los factores climáticos, geográficos, de salud y socioeconómicos.
