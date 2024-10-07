@@ -2,128 +2,147 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-## Descripción
+## Description
 
-Este repositorio contiene un proyecto orientado al procesamiento y visualización de datos climáticos, geográficos y de salud relacionados con el ambiente y la calidad del aire. El objetivo principal es generar histogramas y mapas interactivos que permitan a los usuarios familiarizarse con la naturaleza de los datos y comprender cómo se relacionan entre sí, especialmente en el contexto de aspectos socioeconómicos.
+This repository contains a project focused on the processing and visualization of climate, geographic, and health data related to the environment and air quality. The main goal is to generate histograms and interactive maps that allow users to familiarize themselves with the nature of the data and understand how they relate to each other, especially in the context of socioeconomic aspects.
 
-## Tabla de Contenidos
+## Table of Contents
 
-- [Descripción](#descripción)
-- [Instalación](#instalación)
-- [Uso](#uso)
-  - [Procesamiento de Datos](#procesamiento-de-datos)
-  - [Generación de Gráficos](#generación-de-gráficos)
-- [Tecnologías Utilizadas](#tecnologías-utilizadas)
-- [Contribuciones](#contribuciones)
-- [Licencia](#licencia)
-- [Contacto](#contacto)
+- [Description](#description)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Data Processing](#data-processing)
+  - [Graph Generation](#graph-generation)
+- [Technologies Used](#technologies-used)
+- [Contributions](#contributions)
+- [License](#license)
+- [Contact](#contact)
 
-## Instalación
+## Installation
 
-### Requisitos Previos
+### Prerequisites
 
 - [Python 3.8+](https://www.python.org/downloads/)
 - [pip](https://pip.pypa.io/en/stable/installation/)
 - [Git](https://git-scm.com/downloads)
 
-### Pasos de Instalación
+### Installation Steps
 
-1. **Clonar el Repositorio**
+1. **Clone the Repository**
 
     ```bash
-    git clone https://github.com/tu_usuario/NASA-SPACE-APPS.git
+    git clone https://github.com/your_user/NASA-SPACE-APPS.git
     cd NASA-SPACE-APPS
     ```
 
-2. **Crear un Entorno Virtual (Opcional pero Recomendado)**
+2. **Create a Virtual Environment (Optional but Recommended)**
 
     ```bash
     python3 -m venv env
-    source env/bin/activate  # En Windows: env\Scripts\activate
+    source env/bin/activate  # On Windows: env\Scripts\activate
     ```
 
-3. **Instalar las Dependencias**
+3. **Install Dependencies**
 
     ```bash
     pip install -r requirements.txt
     ```
 
-## Uso
+## Usage
 
-### Procesamiento de Datos
+### Data Processing
 
-Para procesar los datos y generar los archivos necesarios, ejecuta el siguiente comando:
+To process the data and generate the necessary files, run the following command:
 
 ```bash
 python main.py
-```
 
-Este script realizará las siguientes tareas:
+This script will perform the following tasks:
 
-- Limpieza y preparación de los datos.
-- Agregación de información relevante.
-- Almacenamiento de los datos procesados en la carpeta `datasets/`.
+Data cleaning and preparation.
 
-### Generación de Gráficos
+Aggregation of relevant information.
 
-Los gráficos se generan utilizando Plotly a través de los scripts en `data-management/utils/`. A continuación, se presentan algunos ejemplos de cómo crear histogramas y mapas interactivos.
+Storage of processed data in the datasets/ folder.
 
-#### Ejemplo: Generar un Histograma de Ingresos
 
-```python
+Graph Generation
+
+The graphs are generated using Plotly through the scripts in data-management/utils/. Below are some examples of how to create histograms and interactive maps.
+
+Example: Generate an Income Histogram
+
 from data_management.utils.graph_helper import plot_histogram
 import pandas as pd
 
-# Cargar los datos
+# Load the data
 df = pd.read_csv('datasets/data_filtered_plot.csv')
 
-# Generar el histograma
-plot_histogram(df, column='ingreso', title='Histograma de Ingresos')
-```
+# Generate the histogram
+plot_histogram(df, column='income', title='Income Histogram')
 
-#### Ejemplo: Generar un Mapa de Calidad del Aire
+Example: Generate an Air Quality Map
 
-```python
 from data_management.utils.graph_helper import plot_map
 import pandas as pd
 
-# Cargar los datos geoespaciales y de calidad del aire
+# Load geospatial and air quality data
 df = pd.read_json('datasets/data_with_location.json')
 geojson = 'img/colgeo.geojson'
 
-# Generar el mapa
-plot_map(df, geojson, location_column='location', value_column='PM2.5', title='Mapa de Calidad del Aire PM2.5')
-```
+# Generate the map
+plot_map(df, geojson, location_column='location', value_column='PM2.5', title='PM2.5 Air Quality Map')
 
-## Tecnologías Utilizadas
+Technologies Used
 
-- **Python 3.8+**: Lenguaje de programación principal.
-- **Pandas**: Manipulación y análisis de datos.
-- **Plotly**: Visualización interactiva de datos.
-- **Jupyter Notebook**: Análisis exploratorio y documentación interactiva.
-- **Docker**: Contenerización de la aplicación (si aplica).
-- **GeoJSON**: Manejo de datos geoespaciales.
+Python 3.8+: Main programming language.
 
-## Contribuciones
+Pandas: Data manipulation and analysis.
 
-¡Las contribuciones son bienvenidas! Si deseas contribuir a este proyecto, por favor sigue los siguientes pasos:
+Plotly: Interactive data visualization.
 
-1. **Fork** el repositorio.
-2. Crea una rama para tu característica (`git checkout -b feature/nueva-caracteristica`).
-3. Realiza tus cambios y asegúrate de que el código siga las guías de estilo.
-4. Haz **commit** de tus cambios (`git commit -m 'Añadir nueva característica'`).
-5. **Push** a la rama (`git push origin feature/nueva-caracteristica`).
-6. Abre un **Pull Request**.
+Jupyter Notebook: Exploratory analysis and interactive documentation.
 
-## Licencia
+Docker: Application containerization (if applicable).
 
-Este proyecto está licenciado bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
-
-## Contacto
-
-Si tienes alguna pregunta o sugerencia, no dudes en contactarme:
-
-- **Correo Electrónico**: tomassosa.23@gmail.com
+GeoJSON: Handling geospatial data.
 
 
-¡Gracias por revisar este proyecto! Esperamos que las visualizaciones generadas te ayuden a comprender mejor la relación entre los factores climáticos, geográficos, de salud y socioeconómicos.
+Contributions
+
+Contributions are welcome! If you want to contribute to this project, please follow these steps:
+
+1. Fork the repository.
+
+
+2. Create a branch for your feature (git checkout -b feature/new-feature).
+
+
+3. Make your changes and ensure the code follows style guidelines.
+
+
+4. Commit your changes (git commit -m 'Add new feature').
+
+
+5. Push to the branch (git push origin feature/new-feature).
+
+
+6. Open a Pull Request.
+
+
+
+License
+
+This project is licensed under the MIT License. See the LICENSE file for more details.
+
+Contact
+
+If you have any questions or suggestions, feel free to contact me:
+
+Email: tomassosa.23@gmail.com
+
+
+Thank you for checking out this project! We hope the generated visualizations help you better understand the relationship between climate, geographic, health, and socioeconomic factors.
+
+¡Ya puedes copiarlo!
+
