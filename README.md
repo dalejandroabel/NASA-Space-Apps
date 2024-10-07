@@ -56,6 +56,7 @@ To process the data and generate the necessary files, run the following command:
 
 ```bash
 python main.py
+```
 
 This script will perform the following tasks:
 
@@ -71,7 +72,7 @@ Graph Generation
 The graphs are generated using Plotly through the scripts in data-management/utils/. Below are some examples of how to create histograms and interactive maps.
 
 Example: Generate an Income Histogram
-
+```
 from data_management.utils.graph_helper import plot_histogram
 import pandas as pd
 
@@ -80,9 +81,10 @@ df = pd.read_csv('datasets/data_filtered_plot.csv')
 
 # Generate the histogram
 plot_histogram(df, column='income', title='Income Histogram')
+```
 
 Example: Generate an Air Quality Map
-
+```
 from data_management.utils.graph_helper import plot_map
 import pandas as pd
 
@@ -92,6 +94,7 @@ geojson = 'img/colgeo.geojson'
 
 # Generate the map
 plot_map(df, geojson, location_column='location', value_column='PM2.5', title='PM2.5 Air Quality Map')
+```
 
 Technologies Used
 
@@ -144,5 +147,4 @@ Email: tomassosa.23@gmail.com
 
 Thank you for checking out this project! We hope the generated visualizations help you better understand the relationship between climate, geographic, health, and socioeconomic factors.
 
-¡Ya puedes copiarlo!
 
